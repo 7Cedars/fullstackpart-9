@@ -1,3 +1,5 @@
+import {isNotNumber, Readline} from './utils' 
+
 type Rating = 1 | 2 | 3 ;
 
 interface ExerciseAssessment {
@@ -10,7 +12,11 @@ interface ExerciseAssessment {
   average: number;
 }
 
-const calculateExercises = (trainingData: number[], targetAverage: number): ExerciseAssessment => {
+interface TargetTraining {
+  days: number
+}
+
+const calculateExercises = (targetAverage: number, trainingData: number[]): ExerciseAssessment => {
 
   console.log("Input data: ", trainingData, "target average:", targetAverage)
 
@@ -39,4 +45,20 @@ const calculateExercises = (trainingData: number[], targetAverage: number): Exer
   })
 }
 
-console.log(calculateExercises([1,1,0,1,2,0,0,0], 1.25))
+Readline.question("Enter your target average training duration (in hours), followed by hours trained per day (in hours, for any number of days). Numbers should be separated by a space.\n",
+  (answer: string) => {
+    const userInput = answer.split(" ")
+    const checkInput = userInput.map(input => isNotNumber(input) ) 
+    const cleanedInput = userInput.map((input: string) => parseInt(input) ) 
+
+    if (checkInput.includes(true)) {
+      console.log('Error: non-numbers were inserted. Please insert a list of numbers separated by spaces. Do not add a space at end of sentence.')
+      
+    } else {
+      const [TargetTraining, ...TrainingData] = cleanedInput;
+      console.log(calculateExercises(TargetTraining, TrainingData));
+    
+    } 
+    Readline.close();   
+  } 
+)

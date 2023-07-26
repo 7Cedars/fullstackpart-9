@@ -1,3 +1,5 @@
+import {isNotNumber, Readline} from './utils' 
+
 const calculateBmi = (height: number, weight: number): string => {
 
   // calculation and assessment categories taken from https://en.wikipedia.org/wiki/Body_mass_index
@@ -17,4 +19,28 @@ const calculateBmi = (height: number, weight: number): string => {
   }
 }
 
-console.log(calculateBmi(178, 90))
+Readline.question("Enter your height (in cm) and weight (in kg), divided by a space.\n", (answer: string) => {
+  const userInput = answer.split(" ")
+  if (userInput.length != 2 ) {
+    console.log("incorrect number of inputs. Insert two numbers divided by a space. Do not add a space at end of sentence." ) 
+    Readline.close();
+  } 
+  if (isNotNumber(userInput[0]) === true || isNotNumber(userInput[1]) === true) {
+    console.log("incorrect type of input. Insert two numbers. Do not add a space at end of sentence." ) 
+    Readline.close();
+  }   
+  if (isNotNumber(userInput[0]) === false && isNotNumber(userInput[1]) === false) {
+    const height = Number(userInput[0])
+    const weight = Number(userInput[1])
+    console.log(calculateBmi(height, weight))
+    Readline.close();
+  } 
+  }
+)
+
+
+
+
+
+
+
