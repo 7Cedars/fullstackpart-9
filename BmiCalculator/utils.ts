@@ -1,9 +1,11 @@
-export const isNotNumber = (argument: any): boolean =>
+import readline from 'readline'; 
+
+export const isNotNumber = (argument: string): boolean =>
   isNaN(parseInt(argument));
 
-export const Readline = require("readline").createInterface({
+export const Readline = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
 
-export default "default"
+export default "default";
