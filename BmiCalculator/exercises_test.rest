@@ -1,0 +1,12 @@
+### exercise app test. 
+POST http://localhost:3002/exercises
+content-type: application/json
+
+{
+    "daily_exercises": [1, 1, 2, 0, 3, 0, 2.5],
+    "target": 5
+}
+
+
+### bmi request
+GET http://localhost:3002/bmi?height=180&weight=99
