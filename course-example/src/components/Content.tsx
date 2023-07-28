@@ -4,7 +4,7 @@ const Content = (courses: CourseEntries) => {
   return <> 
   {console.log(courses)}
   {
-    Object.values(courses)[0].map((course: CourseEntry) => ( // ugly. But ok for now?     
+    Object.values(courses)[0].map((course: CourseEntry) => ( // ugly. But works.      
       <p key={course.name}> {course.name} {course.exerciseCount}  </p>
     )) 
   }
