@@ -6,10 +6,8 @@
   "scripts": {
     "test": "jest --verbose",
     "ts-node": "ts-node",
-    "calculateBmi": "ts-node bmiCalculator.ts",
-    "calculateExercises": "ts-node exerciseCalculator.ts",
     "start": "node build/index.js",
-    "dev": "ts-node-dev index.ts",
+    "dev": "ts-node-dev src/index.ts",
     "lint": "eslint --ext .ts .",
     "tsc": "tsc"
   },

@@ -1,10 +1,10 @@
-// type Rating = 1 | 2 | 3 ; -- somehow is not accepted below. Fix later. 
+type Rating = 1 | 2 | 3 ; // -- somehow is not accepted below. Fix later. 
 
 interface ExerciseAssessment {
   periodLength: number;
   trainingDays: number;
   success: boolean; 
-  rating: number; // changed to number for now. 
+  rating: Rating; // changed to number for now. 
   ratingDescription: string; 
   target: number;
   average: number;
@@ -32,7 +32,7 @@ export const calculateExercises = (daily_exercises: number[], target: number): E
     periodLength,
     trainingDays,
     success: assessment.success,
-    rating: assessment.rating,
+    rating: assessment.rating as Rating,
     ratingDescription: assessment.ratingDescription, 
     target: target,
     average
