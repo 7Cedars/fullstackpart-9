@@ -1,6 +1,7 @@
 import diagnoses from '../../data/diagnoses';
+import { DiagnosisEntry } from '../types';
 
-export const getEntries = () => {
+export const getEntries = (): DiagnosisEntry[] => {
   return diagnoses;
 };
 
