@@ -1,10 +1,11 @@
-import { CourseEntries, CourseEntry } from '../types';
+import { CourseEntry } from '../types';
+import courseData from "../data/courseData";
 
-const Total = (courses: CourseEntries) => {
+const Total = () => {
   return (
       <p>
         Number of exercises{" "}
-        {Object.values(courses)[0]
+        {courseData
           .reduce((carry: number, part: CourseEntry) => 
             carry + part.exerciseCount, 0
           )}

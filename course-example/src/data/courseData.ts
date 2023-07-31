@@ -15,8 +15,8 @@ const data = [
   }
 ];
 
-const CourseData: CourseEntry[] = data.map(obj => {
+const courseData: CourseEntry[] = data.map(obj => {
   return obj as CourseEntry;
 });
 
-export default CourseData;
+export default courseData; 

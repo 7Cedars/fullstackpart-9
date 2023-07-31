@@ -1,10 +1,11 @@
-import { CourseEntries, CourseEntry } from '../types';
+import { CourseEntry } from '../types';
+import courseData from "../data/courseData";
 
-const Content = (courses: CourseEntries) => { 
+const Content = () => { 
   return <> 
-  {console.log(courses)}
+  {console.log(courseData)}
   {
-    Object.values(courses)[0].map((course: CourseEntry) => ( // ugly. But works.      
+    courseData.map((course: CourseEntry) => ( // ugly. But works.      
       <p key={course.name}> {course.name} {course.exerciseCount}  </p>
     )) 
   }

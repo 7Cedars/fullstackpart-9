@@ -7,6 +7,6 @@ export interface CourseEntry {
   exerciseCount: number
 }
 
-export interface CourseEntries {
-  courses: CourseEntry[]
-}
+// export interface CourseEntries {
+//   courses: CourseEntry
+// }
