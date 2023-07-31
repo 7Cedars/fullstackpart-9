@@ -10,35 +10,41 @@ const assertNever = (value: never): never => {
 
 const Part = ({courseParts}: {courseParts: CoursePart[]}): JSX.Element => {
 
-return <> {
+return <div> {
 courseParts.map(part => {
     switch (part.kind) {
       case "basic":
         console.log("Basic: ", part.name); 
-        return <> 
+        return <p> 
           <b key = {part.name}> {part.name} {part.exerciseCount} </b> 
-          <div> {part.description  } </div>
-          <br/>  
-          </> 
+          <div> <i> { part.description } </i> </div>
+          {/* <br/>   */}
+          </p> 
       case "background":
         console.log("Background: ", part.name); 
-        return <> 
+        return <p> 
         <b key = {part.name}> {part.name} {part.exerciseCount}</b> 
-        <div>  {part.description} {part.backgroundMaterial} </div>
-        <br/>
-        </>  
+        <div> <i> { part.description } </i> </div> 
+        <div> {part.backgroundMaterial} </div>
+        </p>  
       case "group":
         console.log("Group: ", part.name); 
-        return <> 
+        return <p> 
         <b key = {part.name}> {part.name} {part.exerciseCount} </b> 
         <div>  Group Project Count: {part.groupProjectCount} </div>
-        <br/>
-        </> 
-      default: 
+        </p> 
+      case "special":
+        return <p> 
+          <b key = {part.name}> {part.name} {part.exerciseCount} </b> 
+          <div> <i> { part.description } </i> </div>
+          <div> Required skills: { part.requirements.map(req => ( <text key = {req} > {req} </text> )) } </div> 
+          <br/>
+          </p>
+      default:
         return assertNever (part); 
     }
   })
 }
-</> }
+</div> }
 
 export default Part
