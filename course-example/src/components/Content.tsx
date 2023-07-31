@@ -1,15 +1,18 @@
-import { CourseEntry } from '../types';
-import courseData from "../data/courseData";
+import { CoursePart } from '../types';
+import CourseParts from "../data/courseData";
+import Part from "./Part"; 
 
 const Content = () => { 
-  return <> 
-  {console.log(courseData)}
-  {
-    courseData.map((course: CourseEntry) => ( // ugly. But works.      
+  
+  return <div>  
+  <Part courseParts = {CourseParts} /> 
+  {/* {console.log(courseData)} */}
+  {/* {
+    courseData.map((course: CoursePart) => (     
       <p key={course.name}> {course.name} {course.exerciseCount}  </p>
     )) 
-  }
-  </>
+  } */}
+  </div>
 }
  
 export default Content;
