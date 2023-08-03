@@ -10,7 +10,18 @@ export const getAllEntries = async () => {
 };
 
 export const createEntry = async (entryToAdd: NewDiaryEntry) => {
-  return axios
-    .post<NewDiaryEntry>(baseUrl, entryToAdd ) 
-    .then(response => response.data);
+  try {
+    const response = axios.post<NewDiaryEntry>(baseUrl, entryToAdd ) 
+    return response;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log("THIS IS AN ERROR!", error.status)
+      return "this is an error"
+      // console.error(error.response);
+      // Do something with this error...
+    } else {
+      console.log("THIS IS AN ERROR!", error)
+      // console.error(error);
+    }
+  }
 }; 
