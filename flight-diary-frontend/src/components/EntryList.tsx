@@ -1,8 +1,4 @@
-import { NonSensitiveDiaryEntry } from '../types';
-
-interface PropsEntries {
-  entries: NonSensitiveDiaryEntry[] | []
-}
+import { NonSensitiveDiaryEntry, PropsEntries } from '../types';
 
 const EntryList = ({ entries } : PropsEntries ) => {
   

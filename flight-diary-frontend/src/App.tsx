@@ -1,35 +1,24 @@
 import { useState, useEffect} from 'react';
-import axios, { AxiosError } from 'axios';
-import { NonSensitiveDiaryEntry, Weather, Visibility, NewDiaryEntry } from './types';
+import axios from 'axios';
+import { NonSensitiveDiaryEntry, Weather, Visibility, ValidationError } from './types';
 import EntryList from './components/EntryList';
 import { getAllEntries, createEntry } from './services/diaryServices';
-// import EntryForm from './components/EntryForm';
-
-interface ValidationError {
-  message: string;
-  response: Record<string, string[]>
-  
-}
 
 const App = () => {
   
   const [entries, setEntries] = useState<NonSensitiveDiaryEntry[] >([]); 
   const [errorMessage, setErrorMessage] = useState<string | undefined>(); 
-  const [date, setDate] = useState<string>('')
-  const [weather, setWeather] = useState<Weather>('' as Weather)
-  const [visibility, setVisibility] = useState<Visibility>('' as Visibility)
-  const [comment, setComment] = useState<string>('') 
+  const [date, setDate] = useState<string>('');
+  const [weather, setWeather] = useState<Weather>('' as Weather);
+  const [visibility, setVisibility] = useState<Visibility>('' as Visibility);
+  const [comment, setComment] = useState<string>('');
 
   useEffect(() => {
     getAllEntries().then(data => {
         setEntries(data);
       })
+      console.log(Object.values(Visibility))
   }, []);
-
-  const stylingErrorMessage  = {  
-    padding: ".1em",
-    color: "red"
-  }
 
   const entryCreation = async (event: React.SyntheticEvent) => {
     event.preventDefault()
@@ -38,11 +27,10 @@ const App = () => {
       weather:  weather, 
       visibility:  visibility, 
       comment:   comment
-    }
+    };
 
     try {
-      const createdEntry = await createEntry(entryToAdd);
-      console.log("created entry: ", createdEntry)
+      await createEntry(entryToAdd);
       const data = await getAllEntries();
       
       setEntries(data);
@@ -52,13 +40,8 @@ const App = () => {
       setComment('');
       setErrorMessage(undefined);
     } catch (error) {
-      if (axios.isAxiosError<ValidationError, Record<string, unknown>>(error)) {
-        console.error(error.response);
-        console.log(`test ${error.response?.data}`)
-        
+      if (axios.isAxiosError<ValidationError, Record<string, unknown>>(error)) {       
         setErrorMessage(` ${error.response?.data}`); 
-        
-        console.log("errorMessage: ", errorMessage)
       } else {
         console.error(error);
       }
@@ -70,28 +53,40 @@ return (
   <div>
     <h2> Add new entry </h2>
 
-    { errorMessage ? <p style = {stylingErrorMessage}> { errorMessage } </p> : null }  
+    { errorMessage ? <p style = {{ color: "red" }}> { errorMessage } </p> : null };  
       
       <form onSubmit={entryCreation}>
         <div>
-          Date: <input value={date} onChange={(event) => setDate(event.target.value)} />
+          <label >Flight date: </label>
+          <input type="date" id="date" name="flight-date" value={date} min="2000-01-01" max="2023-12-31" 
+                 onChange={(event) => setDate(event.target.value)}/>
         </div>
         <div>
-          Visibility: <input value={visibility} onChange={(event) => setVisibility(event.target.value as Visibility)} />
+          Visibility:    
+          {Object.values(Visibility).map(visibilityType => (
+              <label key = {visibilityType}> {visibilityType} 
+                <input type="radio" id={visibilityType} name="contact0" value={visibilityType} 
+                  onChange={(event) => setVisibility(event.target.value as Visibility)}/>
+              </label>
+            ))
+          };
         </div>
         <div>
-          Weather: <input value={weather} onChange={(event) => setWeather(event.target.value as Weather)} />
+          Weather:
+          {Object.values(Weather).map(weatherType => (
+              <label key = {weatherType}> {weatherType} 
+                <input type="radio" id={weatherType} name="contact1" value={weatherType} 
+                  onChange={(event) => setWeather(event.target.value as Weather)}/>
+              </label>
+            )) 
+          };    
         </div>
-
         <div>
           Comment: <input value={comment} onChange={(event) => setComment(event.target.value)} />
         </div>
         <button type='submit'>add</button>
       </form>
-
       <EntryList entries = {entries} /> 
-      {/* <EntryForm />  */}
-    {/* </EntriesContext.Provider> */}
   </div>
   ); 
 }

@@ -21,18 +21,14 @@ export interface DiaryEntry {
   comment: string;
 }
 
-// export type IEntriesContext = {
-//   // setNewEntry: (newEntry: NewDiaryEntry | undefined) => ({ entry: DiaryEntry }), 
-//   // newEntry: NewDiaryEntry, 
-//   entries: NonSensitiveDiaryEntry[] | null 
-//   setEntries: (entries: NonSensitiveDiaryEntry[]) => ({ entries: NonSensitiveDiaryEntry[] | void }),
-  
-// }
+export interface PropsEntries {
+  entries: NonSensitiveDiaryEntry[] | []
+}
 
-// export interface IProviderProps {
-//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   children?: any;
-// }
+export interface ValidationError {
+  message: string;
+  response: Record<string, string[]> 
+}
 
 export type NewDiaryEntry = Omit<DiaryEntry, 'id'>;
 
