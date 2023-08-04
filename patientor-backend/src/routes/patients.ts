@@ -1,12 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import express from 'express';
-import { getSanitisedEntry, addPatient } from '../services/patientsService'; 
+import { getSanitisedEntries, addPatient, getSinglePatientEntry } from '../services/patientsService'; 
 import toNewPatientEntry from '../utils'; 
 
 const router = express.Router();
 
 router.get('/', (_req, res) => {
-  const response = getSanitisedEntry();
+  const response = getSanitisedEntries();
+  res.send(response);
+});
+
+router.get('/:id', (req, res) => {
+  const response = getSinglePatientEntry(req.params.id);
   res.send(response);
 });
 
