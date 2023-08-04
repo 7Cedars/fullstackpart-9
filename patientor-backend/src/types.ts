@@ -20,7 +20,7 @@ export interface PatientEntry {
 }
 
 export type SanitisedPatientEntry = Omit<PatientEntry, 'ssn' | 'entries'>; 
-export type NewPatientEntry = Omit<PatientEntry, 'id'>; 
+export type NewPatientEntry = Omit<PatientEntry, 'id' | 'entries' >; 
 
 export interface DiagnosisEntry {
   code: string;

@@ -25,7 +25,8 @@ export const getSanitisedEntries = (): SanitisedPatientEntry[] => {
 export const addPatient = ( entry: NewPatientEntry ): PatientEntry => {
   const newPatientEntry = {
     id: uuid(),
-    ...entry
+    ...entry, 
+    entries: []
   };
 
   patients.push(newPatientEntry);

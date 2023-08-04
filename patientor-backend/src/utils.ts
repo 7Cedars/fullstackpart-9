@@ -1,12 +1,12 @@
-import { NewPatientEntry, Gender, Entry } from './types';
+import { NewPatientEntry, Gender } from './types';
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
 };
 
-const isArray = (array: unknown): array is Array<unknown> => {
-  return array instanceof Array;
-};
+// const isArray = (array: unknown): array is Array<unknown> => {
+//   return array instanceof Array;
+// };
 
 const isGender = (param: string): param is Gender => {
   return Object.values(Gender).map(v => v.toString()).includes(param);
@@ -21,10 +21,10 @@ const isSsn = (ssn: string): boolean => {
   return Boolean(ssn.length > 5); // in reality this should be much more precise obv. 
 }; 
 
-const isNotEntryArray = (entries: Array<unknown>): boolean => {
-  const stringCheck = entries.map(entry => (isString(entry)));
-  return Boolean(stringCheck.includes(false));
-}; 
+// const isNotEntryArray = (entries: Array<unknown>): boolean => {
+//   const stringCheck = entries.map(entry => (isString(entry)));
+//   return Boolean(stringCheck.includes(false));
+// }; 
 
 const parseName = (name: unknown): string => {
   if (!isString(name)) {
@@ -61,14 +61,14 @@ const parseOccupation = (occupation: unknown): string => {
   return occupation;
 };
 
-const parseEntries = (entries: unknown): Array<Entry>  => {
-  if (isArray(entries))  {
-    if (!isNotEntryArray(entries)) {
-      return entries as Entry[]; 
-    }
-  }
-  throw new Error('Incorrect or missing entries: ' + entries);
-};
+// const parseEntries = (entries: unknown): Array<Entry>  => {
+//   if (isArray(entries))  {
+//     if (!isNotEntryArray(entries)) {
+//       return entries as Entry[]; 
+//     }
+//   }
+//   throw new Error('Incorrect or missing entries: ' + entries);
+// };
 
 
 const toNewPatientEntry = (object: unknown): NewPatientEntry => {
@@ -80,8 +80,8 @@ const toNewPatientEntry = (object: unknown): NewPatientEntry => {
       'dateOfBirth' in object && 
       'ssn' in object && 
       'gender' in object && 
-      'occupation' in object && 
-      'entries' in object
+      'occupation' in object //&& 
+      // 'entries' in object
       )  
   {
     const newEntry: NewPatientEntry = {
@@ -90,7 +90,7 @@ const toNewPatientEntry = (object: unknown): NewPatientEntry => {
       ssn: parseSsn(object.ssn),
       gender: parseGender(object.gender),
       occupation: parseOccupation(object.occupation),
-      entries: parseEntries(object.entries)
+      // entries: parseEntries(object.entries)
     };
     return newEntry;
   } 
