@@ -1,4 +1,4 @@
-import { Box, Typography, Icon } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useEffect, useState } from "react";
 import { PathMatch, useMatch } from "react-router-dom"
 import axios from "axios";
@@ -8,6 +8,7 @@ import MaleIcon from '@mui/icons-material/Male';
 import { Patient } from "../../types";
 import { apiBaseUrl } from "../../constants";
 import patientService from "../../services/patients";
+import EntriesList from './EntriesList';
 
 const InfoPatientPage = () => {
 
@@ -52,7 +53,9 @@ const InfoPatientPage = () => {
         </Typography>
             <div> ssn: {patient.ssn} </div>
             <div> occupation: {patient.occupation} </div>
+        <EntriesList patient= {patient}/> 
       </Box>
+     
     )
 };
 
