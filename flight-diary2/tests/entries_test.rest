@@ -1,0 +1,13 @@
+### Get all entries 
+GET http://localhost:3001/
+
+### Example 
+POST http://localhost:3001/api/diaries
+content-type: application/json
+
+{
+    "date": "2023-03-03", 
+    "weather": "sunny", 
+    "visibility": "good", 
+    "comment": "This is a comment"
+}
