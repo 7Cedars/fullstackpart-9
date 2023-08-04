@@ -1,13 +1,13 @@
 import { v1 as uuid } from 'uuid'; 
 import patients from '../../data/patients';
-import { SanitisedPatientEntry, PatientEntry, NewPatientEntry } from '../types';
+import { SanitisedPatientEntry, Patient, NewPatientEntry } from '../types';
 
-export const getEntries = (): PatientEntry[]  => {
+export const getEntries = (): Patient[]  => {
   return patients;
   
 };
 
-export const getSinglePatientEntry = ( id: string ): PatientEntry | undefined  => {
+export const getSinglePatientEntry = ( id: string ): Patient | undefined  => {
   const patient = patients.find(patient => patient.id === id); 
   return patient;
 };
@@ -22,7 +22,7 @@ export const getSanitisedEntries = (): SanitisedPatientEntry[] => {
   }));
 };
 
-export const addPatient = ( entry: NewPatientEntry ): PatientEntry => {
+export const addPatient = ( entry: NewPatientEntry ): Patient => {
   const newPatientEntry = {
     id: uuid(),
     ...entry, 
