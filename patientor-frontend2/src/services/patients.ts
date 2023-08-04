@@ -1,6 +1,5 @@
 import axios from "axios";
 import { Patient, PatientFormValues } from "../types";
-import { PathMatch } from "react-router-dom"
 
 import { apiBaseUrl } from "../constants";
 
