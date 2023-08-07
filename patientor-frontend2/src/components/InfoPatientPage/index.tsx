@@ -53,7 +53,7 @@ const InfoPatientPage = () => {
         </Typography>
             <div> ssn: {patient.ssn} </div>
             <div> occupation: {patient.occupation} </div>
-        <EntriesList patient= {patient}/> 
+         <EntriesList patient= {patient}/> 
       </Box>
      
     )
