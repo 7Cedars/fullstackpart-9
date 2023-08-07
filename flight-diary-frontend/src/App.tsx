@@ -53,7 +53,7 @@ return (
   <div>
     <h2> Add new entry </h2>
 
-    { errorMessage ? <p style = {{ color: "red" }}> { errorMessage } </p> : null };  
+    { errorMessage ? <p style = {{ color: "red" }}> { errorMessage } </p> : null }
       
       <form onSubmit={entryCreation}>
         <div>
@@ -69,7 +69,7 @@ return (
                   onChange={(event) => setVisibility(event.target.value as Visibility)}/>
               </label>
             ))
-          };
+          }
         </div>
         <div>
           Weather:
@@ -79,7 +79,7 @@ return (
                   onChange={(event) => setWeather(event.target.value as Weather)}/>
               </label>
             )) 
-          };    
+          }    
         </div>
         <div>
           Comment: <input value={comment} onChange={(event) => setComment(event.target.value)} />
@@ -88,7 +88,7 @@ return (
       </form>
       <EntryList entries = {entries} /> 
   </div>
-  ); 
+  )
 }
 
 export default App;
