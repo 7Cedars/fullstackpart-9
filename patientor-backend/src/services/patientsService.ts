@@ -1,6 +1,11 @@
 import { v1 as uuid } from 'uuid'; 
 import patients from '../../data/patients';
-import { SanitisedPatientEntry, Patient, NewPatientEntry } from '../types';
+import { 
+  EntryWithoutId, 
+  Entry, 
+  SanitisedPatientEntry, 
+  Patient, 
+  NewPatientEntry } from '../types';
 
 export const getEntries = (): Patient[]  => {
   return patients;
@@ -20,6 +25,25 @@ export const getSanitisedEntries = (): SanitisedPatientEntry[] => {
     gender,
     occupation
   }));
+};
+
+export const addEntry = (id: string, entry: EntryWithoutId): Entry => {
+  const newEntry = {
+      id: uuid(),
+      ...entry, 
+      entries: []
+    }; 
+
+  const oldPatientFile = patients.find(patient => {
+    patient.id === id;
+  }); 
+
+  if (oldPatientFile) {
+    oldPatientFile.entries.push(newEntry);
+    return newEntry;
+  } else {
+    throw new Error ("Patient File not Found."); 
+  } 
 };
 
 export const addPatient = ( entry: NewPatientEntry ): Patient => {

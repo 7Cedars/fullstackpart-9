@@ -37,7 +37,6 @@ interface Discharge {
 
 export interface HospitalEntry extends BaseEntry {
   type: "Hospital";
-  specialist: string;
   discharge?: Discharge; 
 }
 
@@ -48,7 +47,6 @@ interface SickLeave {
 
 export interface OccupationalHealthcareEntry extends BaseEntry {
   type: "OccupationalHealthcare";
-  specialist: string;
   employerName: string;
   sickLeave?: SickLeave;
 }
@@ -67,5 +65,9 @@ export interface Patient {
   dateOfBirth?: string;
   entries: Array<Entry>
 }
+
+// see https://fullstackopen.com/en/part9/grande_finale_patientor#omit-with-unions
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+export type EntryWithoutId = UnionOmit<Entry, 'id'>;
 
 export type PatientFormValues = Omit<Patient, "id" | "entries">;
