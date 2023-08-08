@@ -12,6 +12,10 @@ const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
 };
 
+const isNumber = (text: unknown): text is number => {
+  return typeof text === 'number' || text instanceof Number;
+};
+
 const isGender = (param: string): param is Gender => {
   return Object.values(Gender).map(v => v.toString()).includes(param);
 };
@@ -97,6 +101,12 @@ const parseCriteria = (criteria: unknown): string => {
   return criteria;
 };
 
+const parseHealthCheckRating = (healthCheckRating: unknown): number => {
+  if (!isNumber(healthCheckRating) || healthCheckRating > 3) {
+    throw new Error('Incorrect or missing healthCheckRating data.');
+  }
+  return healthCheckRating;
+}; 
 // const parseType = (type: unknown): 'Hospital' | 'OccupationalHealthcare' | 'HealthCheck' => {
 //   if (!isType(type))
 //   {
@@ -168,24 +178,27 @@ const toBaseEntry = (object: unknown): BaseEntryWithoutId => {
     throw new Error('Incorrect or missing data');
   }
 
+  console.log("object: ", object);
+
   if ('description' in object && 
       'date' in object && 
       'specialist' in object && 
       'type' in object
       )  
   {
-    const baseEntry: BaseEntryWithoutId = {
+    const base: BaseEntryWithoutId = {
       description: parseDescription(object.description),
       date: parseDate(object.date),
       specialist: parseSpecialist(object.specialist), 
     };
     if ('diagnosisCodes' in object) {
       return {
-        ...baseEntry, 
-        diagnosisCodes: parseDiagnosisCodes(object.diagnosisCodes)
-      };
+        ...base, 
+        diagnosisCodes: parseDiagnosisCodes(object)
+      }; 
+     } else {
+      return base;  
      }
-    return baseEntry;
   } 
   throw new Error('Incorrect data: some fields are missing');
 }; 
@@ -201,15 +214,15 @@ export const toNewEntry = (object: unknown): EntryWithoutId => {
 
   if ('type' in object) {
     switch(object.type) { 
-      case "OccupationalHealthcare": 
-        if ('employerName' in object) {
+      case "HealthCheck": 
+        if ('healthCheckRating' in object) {
           return { 
             ...baseEntry, 
-            type: "OccupationalHealthcare", 
-            employerName: parseEmployerName(object.employerName)
+            type: "HealthCheck", 
+            healthCheckRating: parseHealthCheckRating(object.healthCheckRating)
             };
           } else {
-            throw new Error('Incorrect or missing data for OccupationalHealthcare entry');
+            throw new Error('Incorrect or missing data for HealthCheck entry');
         }
       case "Hospital": 
         if ('discharge' in object) {   
@@ -224,7 +237,7 @@ export const toNewEntry = (object: unknown): EntryWithoutId => {
               type: "Hospital"
               };
             }
-      case "HealthCheck":
+      case "OccupationalHealthcare":
         if ('employerName' in object) { 
           return { 
             ...baseEntry,
@@ -240,7 +253,7 @@ export const toNewEntry = (object: unknown): EntryWithoutId => {
             sickLeave: parseSickleave(object.sickLeave)
             };
         } else {
-            throw new Error('Incorrect or missing data for HealthCheck Entry.'); 
+            throw new Error('Incorrect or missing data for OccupationalHealthcare Entry.'); 
         }
     } 
 }

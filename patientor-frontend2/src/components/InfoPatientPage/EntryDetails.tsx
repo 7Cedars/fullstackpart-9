@@ -38,6 +38,8 @@ const HealthRatingIcon: React.FC<{healthCheckRating: number}> = ({healthCheckRat
       return <div style= {{color: "yellow"}}> <HeartIcon/> </div>
     case 2: 
       return <div style= {{color: "red"}}> <HeartIcon/> </div>
+    case 3: 
+      return <div style= {{color: "black"}}> <HeartIcon/> </div>
     default: 
       return <div> </div>
      }

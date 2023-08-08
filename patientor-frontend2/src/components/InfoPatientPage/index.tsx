@@ -5,7 +5,7 @@ import axios from "axios";
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 
-import { Patient } from "../../types";
+import { Patient, EntryWithoutId } from "../../types";
 import { apiBaseUrl } from "../../constants";
 import patientService from "../../services/patients";
 import EntriesList from './EntriesList';
@@ -53,7 +53,7 @@ const InfoPatientPage = () => {
         </Typography>
             <div> ssn: {patient.ssn} </div>
             <div> occupation: {patient.occupation} </div>
-         <EntriesList patient= {patient}/> 
+         <EntriesList patient = {patient}  /> 
       </Box>
      
     )

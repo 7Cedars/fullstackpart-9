@@ -34,9 +34,9 @@ export const addEntry = (id: string, entry: EntryWithoutId): Entry => {
       entries: []
     }; 
 
-  const oldPatientFile = patients.find(patient => {
-    patient.id === id;
-  }); 
+  console.log("ID: ", id); 
+
+  const oldPatientFile = patients.find(patient => patient.id === id ); 
 
   if (oldPatientFile) {
     oldPatientFile.entries.push(newEntry);
