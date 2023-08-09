@@ -102,6 +102,13 @@ const OccHealthEntry: React.FC<{entry: OccupationalHealthcareEntry}> = ({entry})
         <i> {entry.description} </i>
       </div>
       <DescriptionDiagnoses entry = {entry} /> 
+      {entry.sickLeave ?
+      <div> 
+        Sick leave start: {entry.sickLeave.startDate},  
+        sick leave end: {entry.sickLeave.endDate},       
+      </div>
+        : null  
+      }   
       <div style = {{paddingTop: ".7rem"}}>
           Diagnosed by: {entry.specialist} 
       </div>
@@ -143,6 +150,13 @@ const HospiEntry: React.FC<{entry: HospitalEntry}> = ({entry}) => {
         <i> {entry.description} </i>
       </div>
       <DescriptionDiagnoses entry = {entry} /> 
+      {entry.discharge ?
+      <div> 
+        Discharge date: {entry.discharge.date},  
+        criteria: {entry.discharge.criteria}       
+      </div>
+        : null  
+      }      
       <div style = {{paddingTop: ".7rem"}}>
           Diagnosed by: {entry.specialist} 
       </div>

@@ -22,10 +22,12 @@ const EntriesList = ({ patient}: Props ) => {
   }, [])
 
   const submitNewEntry = async (entry: EntryWithoutId) => {
+    console.log("New Entry", entry)
     
     try {
       const newEntry = await patientService.addEntry(patient.id, entry);
       setEntries(entries.concat(newEntry as Entry));
+      console.log("New entries list: ", entries)
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
         if (e?.response?.data && typeof e?.response?.data === "string") {
@@ -45,6 +47,12 @@ const EntriesList = ({ patient}: Props ) => {
   return (
     <>
     {error ? <ErrorMessage error = {error} /> : null } 
+    <Typography variant="h6" style={{ 
+        marginTop: "1.0em",
+        marginBottom: "0.5em", 
+        fontWeight: "bold"  }}>
+     New Entry
+    </Typography>
     <AddEntryForm onSubmit={submitNewEntry} /> 
     <Typography variant="h6" style={{ 
         marginTop: "1.0em",

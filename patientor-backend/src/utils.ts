@@ -106,29 +106,15 @@ const parseHealthCheckRating = (healthCheckRating: unknown): number => {
     throw new Error('Incorrect or missing healthCheckRating data.');
   }
   return healthCheckRating;
-}; 
-// const parseType = (type: unknown): 'Hospital' | 'OccupationalHealthcare' | 'HealthCheck' => {
-//   if (!isType(type))
-//   {
-//     throw new Error('Incorrect or missing type');
-//   }
-//   return type;
-// };
+};
 
 const parseSickleave = (object: unknown): SickLeave => {
-  if ( !object || typeof object !== 'object' ) {
-    throw new Error('Incorrect or missing data');
+  // I am assuming data is in the correct format. 
+  if ( !object || typeof object !== 'object' || !('sickLeave' in object) ) {
+    throw new Error('Incorrect or missing sickleave data');
   }
-  
-  if ('startDate' in object && 
-      'endDate' in object ) {
-    const sickLeave: SickLeave = {
-      startDate: parseDate(object.startDate), 
-      endDate: parseDate(object.endDate)
-    };
-    return sickLeave;
-  } 
-  throw new Error('Incorrect data: some sickLeave fields are missing');
+  console.log("parseSickleave: ", object.sickLeave); 
+  return object.sickLeave as SickLeave;
 }; 
 
 const parseDischarge = (object: unknown): Discharge => {
@@ -203,7 +189,6 @@ const toBaseEntry = (object: unknown): BaseEntryWithoutId => {
   throw new Error('Incorrect data: some fields are missing');
 }; 
 
-
 export const toNewEntry = (object: unknown): EntryWithoutId => {
 
   if ( !object || typeof object !== 'object' ) {
@@ -242,17 +227,10 @@ export const toNewEntry = (object: unknown): EntryWithoutId => {
           return { 
             ...baseEntry,
             type: "OccupationalHealthcare", 
-            employerName: parseEmployerName(object.employerName)
+            employerName: parseEmployerName(object.employerName), 
+            sickLeave: parseSickleave(object)
             };
-          }
-        if ('sickLeave' in object && 'employerName' in object) { 
-          return { 
-            ...baseEntry,
-            type: "OccupationalHealthcare", 
-            employerName: parseEmployerName(object.employerName),
-            sickLeave: parseSickleave(object.sickLeave)
-            };
-        } else {
+          } else {
             throw new Error('Incorrect or missing data for OccupationalHealthcare Entry.'); 
         }
     } 
