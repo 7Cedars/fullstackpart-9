@@ -1,18 +1,23 @@
-import { useState, SyntheticEvent, useEffect } from "react";
+import { useState, SyntheticEvent } from "react";
 import { 
   Box, 
   TextField, 
   ToggleButton, 
   ToggleButtonGroup,
   Grid, 
-  Button
+  Button,
+  Select,  
+  SelectChangeEvent, 
+  Checkbox, 
+  FormControl,
+  MenuItem,
+  ListItemText
  } from '@mui/material';
-import { EntryWithoutId, SickLeave, Discharge } from '../../types'
+import { EntryWithoutId, Diagnosis} from '../../types'
 
 const styles = {
   descriptions: { 
     marginTop: ".5em",
-    fontColour: "grey",  // correct label? 
     fontWeight: "bold"  
     }, 
   box: {  
@@ -25,6 +30,13 @@ const styles = {
       borderRadius: 2, 
       typography: 'body2'
     }, 
+  subBox: {  
+      m: .25, 
+      marginTop: "0em", 
+      padding: ".5em", 
+      paddingTop: ".5em", 
+      typography: 'body2'
+    },
   grid: {
     paddingTop: "1em", 
     paddingBottom: "3em", 
@@ -32,43 +44,51 @@ const styles = {
   buttons: {
     paddingTop: "0em", 
     paddingBottom: "1em", 
+    color: "red"
+  },
+  selectMenu: {
+    paddingTop: ".6em", 
+    paddingBottom: ".75em", 
+    margin: "0.0em",
+    PaperProps: {
+      style: {
+        maxHeight: 200,
+        
+      },
+    },
   }
 }
 
 interface Props {
   onSubmit: (values: EntryWithoutId) => void;
+  diagnosesEntries: Diagnosis[] | undefined
 }
 
-const AddEntryForm = ({ onSubmit }: Props) => {
+//  behaviour with mixed string / int enum was so odd, that I just decided to hard code it.
+const healthCheckOptions = [ 
+  { value: 0, label: "Healthy" },
+  { value: 1, label: "LowRisk" },
+  { value: 2, label: "HighRisk"},
+  { value: 3, label: "CriticalRisk"} 
+]
+
+const AddEntryForm = ({ onSubmit, diagnosesEntries }: Props) => {
 
   const [selectedForm, setSelectedForm] = useState<string>("HealthCheck");
   const [description, setdescription] = useState<string>('');
-  const [date, setDate] = useState<string>('');
+  const [date, setDate] = useState<string>('yyyy-mm-dd');
   const [specialist, setSpecialist] = useState<string>('');
-  const [diagnosisCodes, setDiagnosisCodes] = useState<string[] | undefined>(undefined);
+  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
   // Hospital entry specific: 
-  const [dischargeDate, setDischargeDate] = useState<string>('');  
+  const [dischargeDate, setDischargeDate] = useState<string>('yyyy-mm-dd');  
   const [dischargeCriteria, setDischargeCriteria] = useState<string>('');
-  const [discharge, setDischarge] = useState<Discharge | undefined>(undefined);   
   // OccupationalHealthcare entry specific: 
   const [employerName, setEmployerName] = useState<string>('');
-  const [sickLeaveStart, setSickLeaveStart] = useState<string>(''); 
-  const [sickLeaveEnd, setSickLeaveEnd] = useState<string>(''); 
-  const [sickLeave, setSickLeave] = useState<SickLeave | null>(null); 
+  const [sickLeaveStart, setSickLeaveStart] = useState<string>('yyyy-mm-dd'); 
+  const [sickLeaveEnd, setSickLeaveEnd] = useState<string>('yyyy-mm-dd'); 
   // HealthCheck entry specific: 
   const [healthCheckRating, setHealthCheckRating] = useState<number>(0);
-
-  useEffect(() => {
-    setDischarge({date: dischargeDate, criteria: dischargeCriteria})
-    console.log("discharge:  ", discharge)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dischargeDate, dischargeCriteria]); 
-
-  useEffect(() => {
-    setSickLeave({startDate: sickLeaveStart, endDate: sickLeaveEnd})
-    console.log("sickLeave:  ", sickLeave)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sickLeaveStart, sickLeaveEnd]); 
+  // const [healthCheckRatingOption, setHealthCheckRatingOption] = useState<HealthCheckRatingOption[]>();
 
   const baseData = ({
     description,
@@ -83,14 +103,14 @@ const AddEntryForm = ({ onSubmit }: Props) => {
         return (
           {...baseData,
             type: "Hospital",
-            discharge } as EntryWithoutId
+            discharge: {date: dischargeDate, criteria: dischargeCriteria} } as EntryWithoutId
           )
       case "OccupationalHealthcare": 
         return (
           {...baseData,
             type: "OccupationalHealthcare",
             employerName,
-            sickLeave } as EntryWithoutId
+            sickLeave: {startDate: sickLeaveStart, endDate: sickLeaveEnd} } as EntryWithoutId
         )
       case "HealthCheck":
         return (
@@ -103,7 +123,6 @@ const AddEntryForm = ({ onSubmit }: Props) => {
     } 
   }
 
-  
   const addEntry = (event: SyntheticEvent) => {
     event.preventDefault();
     onSubmit(entryData(selectedForm));
@@ -113,16 +132,14 @@ const AddEntryForm = ({ onSubmit }: Props) => {
   const cleanupEntryForm = (event: SyntheticEvent) => {
     event.preventDefault();
     setdescription('')
-    setDate('')
+    setDate('yyyy-mm-dd')
     setSpecialist('')
-    setDiagnosisCodes(undefined)
-    setDischargeDate('')
+    setDiagnosisCodes([])
+    setDischargeDate('yyyy-mm-dd')
     setDischargeCriteria('')
-    setDischarge(undefined)
     setEmployerName('')
-    setSickLeaveStart('')
-    setSickLeaveEnd('')
-    setSickLeave(null)
+    setSickLeaveStart('yyyy-mm-dd')
+    setSickLeaveEnd('yyyy-mm-dd')
     setHealthCheckRating(0)
   };
 
@@ -131,6 +148,29 @@ const AddEntryForm = ({ onSubmit }: Props) => {
     newSelectedForm: string,
   ) => {
     setSelectedForm(newSelectedForm);
+  };
+
+  const handleRatingSelection = (event: SelectChangeEvent<typeof healthCheckRating>) => {
+     
+    const {
+      target: { value },
+    } = event;
+    setHealthCheckRating(
+      typeof value === 'string' ? parseInt(value) : value,
+    );
+  };
+
+  const handleDiagnosesSelection = (event: SelectChangeEvent<typeof diagnosisCodes>) => {
+     
+    const {
+      target: { value },
+    } = event;
+    console.log("VALUE: ", value)
+    setDiagnosisCodes(
+      // On autofill we get a stringified value.
+      // value
+      typeof value === 'string' ? value.split(', ') : value,
+    );
   };
 
   return (
@@ -155,8 +195,6 @@ const AddEntryForm = ({ onSubmit }: Props) => {
         Hospital
       </ToggleButton>
     </ToggleButtonGroup>
-    {/* <b> New HealthCheck Entry </b> */}
-
 
     <form onSubmit={addEntry}>
         <TextField
@@ -168,8 +206,8 @@ const AddEntryForm = ({ onSubmit }: Props) => {
         />
         <TextField
           label="Date"
-          placeholder="YYYY-MM-DD"
           fullWidth
+          type="date"
           margin="dense" 
           value={date}
           onChange={({ target }) => setDate(target.value)}
@@ -183,10 +221,11 @@ const AddEntryForm = ({ onSubmit }: Props) => {
         />
         { 
           selectedForm === "Hospital" ? 
-          <>
+          <Box sx = {styles.subBox} >
+            <div style={{color: "grey"}}>Discharge information</div>
             <TextField
               label="Discharge date"
-              placeholder="YYYY-MM-DD"
+              type="date"
               fullWidth
               margin="dense" 
               value={dischargeDate}
@@ -199,7 +238,7 @@ const AddEntryForm = ({ onSubmit }: Props) => {
               value={dischargeCriteria}
               onChange={({ target }) => setDischargeCriteria(target.value) }
             /> 
-          </>
+          </Box>
           : null
         }
         { 
@@ -212,9 +251,11 @@ const AddEntryForm = ({ onSubmit }: Props) => {
               value={employerName}
               onChange={({ target }) => setEmployerName(target.value) }
             />
+            <Box sx = {styles.subBox} >
+              <div style = {{color: "grey"}}> Sick leave information </div>
             <TextField
               label="Sickleave start"
-              placeholder="YYYY-MM-DD"
+              type="date"
               fullWidth
               margin="dense" 
               value={sickLeaveStart}
@@ -222,34 +263,68 @@ const AddEntryForm = ({ onSubmit }: Props) => {
             /> 
             <TextField
               label="Sickleave end"
-              placeholder="YYYY-MM-DD"
+              type="date"
               fullWidth
               margin="dense" 
               value={sickLeaveEnd}
               onChange={({ target }) => setSickLeaveEnd(target.value) }
             /> 
+            </Box>
           </>
           : null
         }
         { 
           selectedForm === "HealthCheck" ? 
-            <TextField
-              label="HealthCheck rating"
-              fullWidth
-              margin="dense" 
-              value={healthCheckRating}
-              onChange={({ target }) => setHealthCheckRating(parseInt(target.value))}
-            /> : null 
-        }
-        
-        <TextField
-          label="Diagnosis Codes"
-          fullWidth
-          margin="dense" 
-          value={diagnosisCodes}
-          onChange={({ target }) => setDiagnosisCodes(target.value.split(','))}
-        />
-
+            <Box sx = {styles.subBox} >
+              <div style = {{color: "grey"}}> Health check rating </div>
+              <FormControl sx={styles.selectMenu} 
+                fullWidth
+                margin="dense" 
+                > 
+                <Select
+                  labelId="select-healthCheck-rating"
+                  id="select-healthCheck-rating"
+                  value={healthCheckRating}
+                  // label="Healthcheck Rating"
+                  onChange={handleRatingSelection}
+                  >
+                  {healthCheckOptions.map(option => (
+                    <MenuItem 
+                      value={option.value}> 
+                      {option.label} 
+                    </MenuItem>
+                  ))
+                  }
+                </Select>
+              </FormControl> 
+            </Box>
+            : null 
+          }
+        { diagnosesEntries === undefined ? 
+        null : 
+          <Box sx = {styles.subBox} >
+            <div style= {{color: "grey"}}> Diagnoses </div>
+            <FormControl sx={styles.selectMenu} 
+            fullWidth>
+              <Select
+                id="checkbox-diagnoses-codes"
+                multiple
+                value={diagnosisCodes}
+                onChange={handleDiagnosesSelection}
+               //  input={<OutlinedInput label="Diagnosis Codes" />}
+                renderValue={(selected) => selected.join(', ')}
+                MenuProps={styles.selectMenu}
+              >
+                {diagnosesEntries.map((entry: Diagnosis) => (
+                  <MenuItem key={entry.code} value={entry.code}>
+                    <Checkbox checked={diagnosisCodes.indexOf(entry.code) > -1} />
+                    <ListItemText primary={`${entry.code}: ${entry.name}`} />
+                  </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>  
+            </Box>
+        } 
         <Grid sx={styles.grid}>
           <Grid item>
             <Button

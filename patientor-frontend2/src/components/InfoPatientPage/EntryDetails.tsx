@@ -1,14 +1,13 @@
-import {  Entry, Diagnosis, HealthCheckEntry, OccupationalHealthcareEntry, HospitalEntry } from '../../types'
+import {  Entry, 
+  Diagnosis, 
+  HealthCheckEntry, 
+  OccupationalHealthcareEntry, 
+  HospitalEntry} from '../../types'
 import {  Box } from '@mui/material';
 import HospitalIcon from '@mui/icons-material/LocalHospital';
 import HealthCheckIcon from '@mui/icons-material/FavoriteBorder';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import HeartIcon from '@mui/icons-material/Favorite';
-
-import { useEffect, useState } from "react";
-import axios from "axios";
-import diagnosesService from "../../services/diagnoses"
-import { apiBaseUrl } from "../../constants";
 
 const assertNever = (entry: never): never => {
     throw new Error(
@@ -45,22 +44,8 @@ const HealthRatingIcon: React.FC<{healthCheckRating: number}> = ({healthCheckRat
      }
   }
 
-const DescriptionDiagnoses: React.FC<{entry: Entry}> = ({entry}) => {
-  const [diagnosesEntries, setDiagnosesEntries] = useState<Diagnosis[]>();
-
-  useEffect(() => {
-    void axios.get<void>(`${apiBaseUrl}/ping`);
   
-    const fetchEntries = async () => {
-        const entries = await diagnosesService.getAll();
-        console.log("ENTRIES FETCHED: ", entries )
-        setDiagnosesEntries(entries);
-      }
-    
-    void fetchEntries();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+const DescriptionDiagnoses: React.FC<{entry: Entry, diagnosesEntries: Diagnosis[]}> = ({entry, diagnosesEntries}) => {
 
   const descriptionDiagnosis = (diagnosis: Diagnosis['code'], diagnosesEntries: Diagnosis[] | undefined) => {
     if (diagnosesEntries === undefined) {
@@ -69,7 +54,6 @@ const DescriptionDiagnoses: React.FC<{entry: Entry}> = ({entry}) => {
     } else {
       const match = diagnosesEntries.find((entry: Diagnosis) => entry.code === diagnosis)
       return ( match?.name ) 
-  
     }
   } 
 
@@ -89,7 +73,7 @@ const DescriptionDiagnoses: React.FC<{entry: Entry}> = ({entry}) => {
   )
 }
 
-const OccHealthEntry: React.FC<{entry: OccupationalHealthcareEntry}> = ({entry}) => {
+const OccHealthEntry: React.FC<{entry: OccupationalHealthcareEntry, diagnosesEntries: Diagnosis[]}> = ({entry, diagnosesEntries}) => {
  
   return (
     <Box sx={styles.box}> 
@@ -101,7 +85,7 @@ const OccHealthEntry: React.FC<{entry: OccupationalHealthcareEntry}> = ({entry})
       <div> 
         <i> {entry.description} </i>
       </div>
-      <DescriptionDiagnoses entry = {entry} /> 
+      <DescriptionDiagnoses entry = {entry} diagnosesEntries={diagnosesEntries}/> 
       {entry.sickLeave ?
       <div> 
         Sick leave start: {entry.sickLeave.startDate},  
@@ -116,7 +100,7 @@ const OccHealthEntry: React.FC<{entry: OccupationalHealthcareEntry}> = ({entry})
   )
 }
 
-const HealthChkEntry: React.FC<{entry: HealthCheckEntry}> = ({entry}) => {
+const HealthChkEntry: React.FC<{entry: HealthCheckEntry, diagnosesEntries: Diagnosis[]}> = ({entry, diagnosesEntries}) => {
 
   const healthCheck = entry.healthCheckRating
 
@@ -129,7 +113,7 @@ const HealthChkEntry: React.FC<{entry: HealthCheckEntry}> = ({entry}) => {
       <div> 
         <i> {entry.description} </i>
       </div>
-      <DescriptionDiagnoses entry = {entry} /> 
+      <DescriptionDiagnoses entry = {entry} diagnosesEntries={diagnosesEntries}/> 
       <HealthRatingIcon healthCheckRating = {healthCheck} /> 
       <div style = {{paddingTop: ".7rem"}}>
           Diagnosed by: {entry.specialist} 
@@ -138,7 +122,7 @@ const HealthChkEntry: React.FC<{entry: HealthCheckEntry}> = ({entry}) => {
   )
 }
 
-const HospiEntry: React.FC<{entry: HospitalEntry}> = ({entry}) => {
+const HospiEntry: React.FC<{entry: HospitalEntry, diagnosesEntries: Diagnosis[]}> = ({entry, diagnosesEntries}) => {
 
   return (
     <Box sx={styles.box}> 
@@ -149,7 +133,7 @@ const HospiEntry: React.FC<{entry: HospitalEntry}> = ({entry}) => {
       <div> 
         <i> {entry.description} </i>
       </div>
-      <DescriptionDiagnoses entry = {entry} /> 
+      <DescriptionDiagnoses entry = {entry} diagnosesEntries={diagnosesEntries}/> 
       {entry.discharge ?
       <div> 
         Discharge date: {entry.discharge.date},  
@@ -164,14 +148,14 @@ const HospiEntry: React.FC<{entry: HospitalEntry}> = ({entry}) => {
   )
 }
 
-const EntryDetails: React.FC<{entry: Entry}> = ({entry}) => {
+const EntryDetails: React.FC<{entry: Entry, diagnosesEntries: Diagnosis[]}> = ({entry, diagnosesEntries}) => {
   switch(entry.type) { 
     case "OccupationalHealthcare": 
-      return <OccHealthEntry entry = {entry} />
+      return <OccHealthEntry entry = {entry} diagnosesEntries={diagnosesEntries}/>
     case "HealthCheck": 
-      return <HealthChkEntry entry = {entry} />
+      return <HealthChkEntry entry = {entry} diagnosesEntries={diagnosesEntries}/>
     case "Hospital": 
-      return <HospiEntry entry = {entry} />
+      return <HospiEntry entry = {entry} diagnosesEntries={diagnosesEntries} />
   default: 
    return assertNever(entry)
   }

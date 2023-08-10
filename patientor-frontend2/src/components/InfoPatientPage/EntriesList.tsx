@@ -2,10 +2,12 @@ import { Typography } from '@mui/material';
 import { useState, useEffect } from "react";
 import EntryDetails from './EntryDetails';
 import AddEntryForm from './AddEntryForm';
-import { Patient, Entry, EntryWithoutId } from '../../types'
+import { Patient, Entry, EntryWithoutId, Diagnosis } from '../../types'
 import patientService from "../../services/patients";
 import axios from 'axios';
 import ErrorMessage from '../Messages/ErrorMessage';
+import diagnosesService from "../../services/diagnoses"
+import { apiBaseUrl } from "../../constants";
 
 interface Props {
   patient: Patient
@@ -15,10 +17,20 @@ const EntriesList = ({ patient}: Props ) => {
 
   const [error, setError] = useState<string>();
   const [entries, setEntries] = useState<Entry[]>([]) 
+  const [diagnosesEntries, setDiagnosesEntries] = useState<Diagnosis[]>();
 
   useEffect(() => {
     setEntries(patient.entries)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+ 
+    void axios.get<void>(`${apiBaseUrl}/ping`);
+    const fetchEntries = async () => {
+      const entries = await diagnosesService.getAll();
+      console.log("ENTRIES FETCHED: ", entries )
+      setDiagnosesEntries(entries as Diagnosis[]);
+    }
+
+    void fetchEntries();    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const submitNewEntry = async (entry: EntryWithoutId) => {
@@ -53,18 +65,18 @@ const EntriesList = ({ patient}: Props ) => {
         fontWeight: "bold"  }}>
      New Entry
     </Typography>
-    <AddEntryForm onSubmit={submitNewEntry} /> 
+    <AddEntryForm onSubmit={submitNewEntry}
+      diagnosesEntries={diagnosesEntries}/> 
     <Typography variant="h6" style={{ 
         marginTop: "1.0em",
         marginBottom: "0.5em", 
         fontWeight: "bold"  }}>
       Existing entries
     </Typography>
-      
-      {/* onCancel={onClose}  */}
-      {entries.map((entry: Entry) => 
-        <EntryDetails entry = { entry } /> 
-      )}
+      {diagnosesEntries ? 
+        entries.map((entry: Entry) => 
+          <EntryDetails entry = { entry } diagnosesEntries={diagnosesEntries}/> 
+      ) : null }
     </>
   )
 }; 
